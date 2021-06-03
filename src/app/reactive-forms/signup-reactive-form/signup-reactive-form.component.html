@@ -1,0 +1,252 @@
+<div class="panel panel-primary">
+<div class="panel-heading">
+        Sign Up!
+    </div>
+
+    <div class="panel-body">
+        <form class="form-horizontal"
+              (ngSubmit)="onSave()"
+              [formGroup]="userForm">
+            <fieldset>
+                <div class="form-group"
+                     [ngClass]="{'has-error': validationMessagesMap.get('firstName').message && firstName.touched}">
+                    <label class="col-md-2 control-label"
+                           for="firstNameId">First Name</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control"
+                               id="firstNameId"
+                               type="text"
+                               placeholder="First Name (required)"
+                               formControlName="firstName"/>
+   
+                          <span class="help-block" *ngIf="validationMessagesMap.get('firstName').message && firstName.touched">
+                                  {{validationMessagesMap.get('firstName').message}}
+                          </span>
+                    </div>
+                </div>
+
+                <div class="form-group"
+                     [ngClass]="{'has-error': validationMessagesMap.get('lastName').message }">
+                    <label class="col-md-2 control-label"
+                        for="lastNameId">Last Name</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control"
+                               id="lastNameId"
+                               type="text"
+                               placeholder="Last Name (required)"
+                               formControlName="lastName"
+                               />
+                        <span class="help-block" *ngIf="validationMessagesMap.get('lastName').message">
+                                {{validationMessagesMap.get('lastName').message}}
+                        </span>
+
+                    </div>
+                </div>
+
+                <div formGroupName="emailGroup"
+                     [ngClass]="{'has-error': validationMessagesMap.get('emailGroup').message}">
+                    <!--Email -->
+                    <div class="form-group"
+                         [ngClass]="{'has-error': validationMessagesMap.get('email').message && emailGroup.touched}">
+                    <label class="col-md-2 control-label" for="emailId">Email</label>
+                    <div class="col-md-8">
+                        <input class="form-control"
+                               id="emailId"
+                               type="email"
+                               placeholder={{placeholder.email}}
+                               formControlName="email"
+                               appAsyncEmailValidator
+                               (blur)="onBlur($event)" />
+                               <span class="help-block" *ngIf="validationMessagesMap.get('email').message && emailGroup.touched">
+                                {{validationMessagesMap.get('email').message}}
+                           </span>
+                      </div>
+                    </div>
+
+                    <!-- ConfirmEmail-->
+                    <div class="form-group"
+                      [ngClass]="{'has-error': validationMessagesMap.get('confirmEmail').message }">
+                      <label class="col-md-2 control-label" for="confirmEmailId">Confirm Email</label>
+
+                      <div class="col-md-8">
+                          <input class="form-control"
+                                id="confirmEmailId"
+                                type="email"
+                                placeholder={{placeholder.confirmEmail}}
+                                formControlName="confirmEmail"
+                                (blur)="onBlur($event)" />
+                          <span class="help-block" *ngIf="validationMessagesMap.get('confirmEmail').message ">
+                              {{validationMessagesMap.get('confirmEmail').message}}
+                          </span>
+                          <span class="help-block" *ngIf="validationMessagesMap.get('emailGroup').message">
+                            {{validationMessagesMap.get('emailGroup').message}}
+                          </span>
+                      </div>
+                    </div>
+                </div>
+
+                <div class="form-group"
+                    [ngClass]="{'has-error': validationMessagesMap.get('phone').message }">
+                    <label class="col-md-2 control-label"
+                        for="phoneId">Phone</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control"
+                               id="phoneId"
+                               type="tel"
+                               placeholder={{placeholder.phone}}
+                               formControlName="phone"
+                               (blur)="onBlur($event)" />
+                        <span class="help-block" *ngIf="validationMessagesMap.get('phone').message">
+                            {{validationMessagesMap.get('phone').message}}
+                        </span>
+                    </div>
+                </div>
+
+                 <div class="form-group">
+                   <label class="col-md-2 control-label">Send Notifications</label>
+                    <div class="col-md-8">
+                       <label class="radio-inline">
+                        <input type="radio"
+                               value="email"
+                               formControlName="notification">Email
+                       </label>
+                       <label class="radio-inline">
+                        <input type="radio"
+                               value="text"
+                               formControlName="notification">Text
+                       </label>
+                    </div>
+                 </div>
+
+                 <div class="form-group"
+                    [ngClass]="{'has-error': validationMessagesMap.get('serviceLevel').message }">
+                    <label class="col-md-2 control-label"
+                        for="serviceLevelId">Service Level</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control"
+                               id="serviceLevelId"
+                               type="number"
+                               formControlName="serviceLevel"
+                               (blur)="onBlur($event)"
+                               appServiceLevelValidator [rMin]="rMin" [rMax]="rMax" />
+                        <span class="help-block" *ngIf="validationMessagesMap.get('serviceLevel').message">
+                            {{validationMessagesMap.get('serviceLevel').message}}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-1 col-md-8 checkbox" >
+                        <label>
+                            <input id="sendProductsId"
+                                   type="checkbox"
+                                   formControlName="sendProducts" />
+                            Send me your products
+                        </label>
+                    </div>
+                </div>
+
+
+                <div *ngIf="sendProducts.value">
+                    <div formArrayName="addresses">
+                      <div *ngFor="let address of addresses.controls; let i = index" [formGroupName]="i">
+                        <div class="form-group" >
+                            <label class="col-md-2 control-label">Address Type</label>
+                            <div class="col-md-8">
+                                    <label class="radio-inline">
+                                        <input type="radio" id="{{'addressType1Id' + i}}" value="home"
+                                              formControlName="addressType">Home
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" id="{{'addressType2Id' + i}}" value="work"
+                                              formControlName="addressType">Work
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" id="{{'addressType3Id' + i}}" value="other"
+                                              formControlName="addressType">Other
+                                    </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-2 control-label"
+                                attr.for="{{'countryId' + i}}">Country, City, Zip Code</label>
+
+                            <div class="col-md-3">
+                                <select class="form-control"
+                                        id="{{'countryId' + i}}"
+                                        formControlName="country">
+                                    <option value="">Select a Country...</option>
+                                    <option *ngFor="let country of countries"
+                                    [value]="country">{{country}}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text"
+                                      class="form-control"
+                                      id="{{'cityId' + i}}"
+                                      placeholder="City"
+                                      formControlName="city">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="number"
+                                      class="form-control"
+                                      id="{{'zipId' + i}}"
+                                      placeholder="Zip Code"
+                                      formControlName="zip">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-2 control-label"
+                                attr.for="{{'street1Id' + i}}">Street Address 1</label>
+                            <div class="col-md-8">
+                                <input type="text"
+                                      class="form-control"
+                                      id="{{'street1Id' + i}}"
+                                      placeholder="Street address"
+                                      formControlName="street1">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-2 control-label"
+                                attr.for="{{'street2Id' + i}}">Street Address 2</label>
+                            <div class="col-md-8">
+                                <input type="text"
+                                      class="form-control"
+                                      id="{{'street2Id' + i}}"
+                                      placeholder="Street address (second line)"
+                                      formControlName="street2">
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-4 col-md-offset-2">
+                        <span>
+                            <button class="btn btn-primary"
+                                    type="submit"
+                                    [disabled]="!userForm.valid">
+                                Save
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+<br>Dirty: {{ userForm.dirty }}
+<br>Touched: {{ userForm.touched }}
+<br>Valid: {{ userForm.valid }}
+<br>Value: {{ userForm.value | json }}
+<br>ServiceLevel.valid {{userForm.get('serviceLevel').valid}}
+<br>userForm.get('emailGroup').errors {{userForm.get('emailGroup').errors | json}}
+<br>Form Status: {{userForm.status }}
